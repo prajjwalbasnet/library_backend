@@ -167,7 +167,7 @@ export const resendVerificationCode = async (req, res)  => {
 
         user.verificationCode = verificationCode
         user.verificationCodeExpire = verificationCodeExpire
-        user.save()
+        await user.save()
 
         const emailSent = await sendVerification(email, verificationCode, user.name)
 
