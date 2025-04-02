@@ -80,6 +80,7 @@ export  const registerUser = async (req, res) => {
     
 }
 
+// ------- Verify Email--------
 export const verifyEmail = async (req, res) => {
 
     try {
@@ -188,5 +189,60 @@ export const resendVerificationCode = async (req, res)  => {
             success: false,
             message: 'Server error during resend verification',
         })
+    }
+}
+
+export const loginUser = async (req, res) => {
+
+    try {
+        const {email, password} = req.body
+
+        if(!email || !password){
+            return res.status(400).json({success:false, message:'Missing field.'})
+        }
+
+        const user = await userModel.findOne({email, isActive:true}).select("+password")
+
+        if(!user){
+            return res.status(400).json({success:false, message:'Invalid email or password'})
+        }
+
+        const isPasswordMatched = await bcrypt.compare(password, user.password)
+        if(!isPasswordMatched){
+            return res.status(404).json({success:false, message:'Invalid email or password'})
+        }
+
+        const token = generateToken(user._id)
+        
+        return res.status(200).json({
+            success:true,
+            token,
+            message: 'Login Successful',
+            user
+        })
+    } catch (error) {
+        console.error('Login error:', error)
+        return res.status(500).json({
+            success: false,
+            message: 'Server error during login'
+        })
+    }
+}
+
+// ----------Logout User----------
+export const logoutUser = async (req,res) => {
+
+    try {
+        
+        return res.status(200).json({
+            success:true,
+            message: "Logged out successfully"
+        })
+    } catch (error) {
+        console.error('Logout error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error during logout'
+        });
     }
 }
