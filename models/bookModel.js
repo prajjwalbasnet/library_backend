@@ -48,4 +48,16 @@ const bookSchema = new mongoose.Schema({
 
 })
 
+bookSchema.pre('save', function(next) {
+    // Only set availableCopies if it's a new document or availableCopies is not set
+    if (this.isNew || this.availableCopies === undefined) {
+        this.availableCopies = this.totalCopies;
+    }
+    
+    // Set availability based on availableCopies
+    this.availability = this.availableCopies > 0;
+    
+    next();
+});
+
 export const bookModel = mongoose.models.books || mongoose.model('books', bookSchema) 

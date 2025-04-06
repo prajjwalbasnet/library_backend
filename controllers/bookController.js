@@ -1,6 +1,6 @@
 import express from 'express'
 import { cloudinary, uploadToCloudinary } from '../config/cloudinary.js'
-import { bookModel } from '../models/bookSchema.js'
+import { bookModel } from '../models/bookModel.js'
 
 
 export const addBook = async (req, res) => {

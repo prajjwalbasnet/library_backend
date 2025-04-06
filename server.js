@@ -5,6 +5,7 @@ import connectDB from './config/mongodb.js'
 import {connectCloudinary} from './config/cloudinary.js'
 import userRouter from './routes/userRoute.js'
 import bookRouter from './routes/bookRoute.js'
+import { borrowRouter } from './routes/borrowRoute.js'
 
 
 const app = express()
@@ -28,6 +29,7 @@ app.get('/', (req,res)=> {
 // api endpopints
 app.use('/api/user', userRouter)
 app.use('/api/book', bookRouter)
+app.use('/api/borrow', borrowRouter)
 
 
 
