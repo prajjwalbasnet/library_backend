@@ -1,50 +1,54 @@
 import mongoose from "mongoose";
 
-const bookSchema = new mongoose.Schema({
-    user : {
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'users',
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        email: {
-            type: String,
-            required: true
-        }
+const bookSchema = new mongoose.Schema(
+  {
+    user: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
     },
     book: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'books',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "books",
+      required: true,
     },
     fine: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-    borrowDate : {
-        type: Date,
-        required: true
+    borrowDate: {
+      type: Date,
+      required: true,
     },
-    dueDate : {
-        type: Date,
-        required: true
+    dueDate: {
+      type: Date,
+      required: true,
     },
-    returnDate : {
-        type: Date,
+    returnDate: {
+      type: Date,
+      default: null,
     },
     returned: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     notified: {
-        type: Boolean,
-        default: false
-    }
-}, 
-{timestamps: true})
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
-export const borrowModel = mongoose.models.borrow || mongoose.model('borrow', bookSchema)
+export const borrowModel =
+  mongoose.models.borrow || mongoose.model("borrow", bookSchema);
