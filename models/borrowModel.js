@@ -12,15 +12,25 @@ const bookSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      studentId: {
+        type: String,
+        required: true,
+      },
       email: {
         type: String,
         required: true,
       },
     },
     book: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "books",
-      required: true,
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "books",
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
     },
     fine: {
       type: Number,

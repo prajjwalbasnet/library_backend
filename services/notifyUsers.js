@@ -5,7 +5,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { getDueDateReminderTemplate } from "../utils/emailTemplates.js";
 
 export const notifyUsers = () => {
-  cron.schedule("*/50 * * * *", async () => {
+  cron.schedule("*/50 */5 * * *", async () => {
     try {
       const oneDayAgo = new Data(Date.now() - 24 * 60 * 60 * 1000);
       const borrowers = await borrowModel.find({

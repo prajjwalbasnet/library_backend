@@ -18,7 +18,7 @@ export const getAllUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(401).json({
+    res.status(500).json({
       success: false,
       message: "Users not found",
     });

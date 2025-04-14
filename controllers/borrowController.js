@@ -17,7 +17,7 @@ export const recordBorrowedBooks = async (req, res) => {
       });
     }
 
-    const user = await userModel.findOne({ email, accountVerified: true });
+    const user = await userModel.findOne({ email, isActive: true });
 
     if (!user) {
       return res.status(404).json({
@@ -61,9 +61,13 @@ export const recordBorrowedBooks = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        studentId: user.studentId,
         email: user.email,
       },
-      book: book._id, // Just the ObjectId, not an object with id and title
+      book: {
+        id: id,
+        title: book.title,
+      }, // Just the ObjectId, not an object with id and title
       borrowDate: new Date(),
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     };
@@ -83,10 +87,10 @@ export const recordBorrowedBooks = async (req, res) => {
 
 export const returnBorrowedBooks = async (req, res) => {
   try {
-    const { bookId } = req.params;
+    const { id } = req.params;
     const { email } = req.body;
 
-    const book = await bookModel.findById(bookId);
+    const book = await bookModel.findById(id);
     if (!book) {
       return res.status(404).json({
         success: false,
@@ -94,7 +98,7 @@ export const returnBorrowedBooks = async (req, res) => {
       });
     }
 
-    const user = await userModel.findOne({ email, accountVerified: true });
+    const user = await userModel.findOne({ email, isActive: true });
 
     if (!user) {
       return res.status(404).json({
@@ -103,11 +107,12 @@ export const returnBorrowedBooks = async (req, res) => {
       });
     }
 
-    const borrowedBook = await userModel.borrowedBooks.find(
-      (b) => b.bookId.toString() === bookId && returned === false
+    const borrowedBook = user.borrowedBooks.find(
+      (b) => b.bookId.toString() === id && b.returned === false
     );
+    
     if (!borrowedBook) {
-      return res.status(401).res({
+      return res.status(401).json({
         success: false,
         message: "This user has not borrowed this book",
       });
@@ -121,12 +126,12 @@ export const returnBorrowedBooks = async (req, res) => {
     await book.save();
 
     const borrow = await borrowModel.findOne({
-      book: bookId,
+      book: id,
       "user.email": email,
       returnDate: null,
     });
     if (!borrow) {
-      return res.status(401).res({
+      return res.status(401).json({
         success: false,
         message: "This user has not borrowed this book",
       });
