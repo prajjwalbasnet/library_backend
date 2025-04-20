@@ -13,7 +13,7 @@ export const recordBorrowedBooks = async (req, res) => {
     if (!book) {
       return res.status(404).json({
         success: false,
-        message: "Book Not found.",
+        message: "Book not found.",
       });
     }
 
@@ -22,7 +22,15 @@ export const recordBorrowedBooks = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User Not found.",
+        message: "User not found.",
+      });
+    }
+
+    // Check if user has a student ID
+    if (!user.studentId) {
+      return res.status(400).json({
+        success: false,
+        message: "User doesn't have a student ID",
       });
     }
 
@@ -67,7 +75,7 @@ export const recordBorrowedBooks = async (req, res) => {
       book: {
         id: id,
         title: book.title,
-      }, // Just the ObjectId, not an object with id and title
+      },
       borrowDate: new Date(),
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     };
@@ -75,6 +83,13 @@ export const recordBorrowedBooks = async (req, res) => {
     // Create the record
     const createdBorrow = await borrowModel.create(newBorrowRecord);
     console.log("Borrow record created:", createdBorrow._id);
+
+    // Add a response for success case
+    res.status(200).json({
+      success: true,
+      message: "Book borrowed successfully",
+      borrow: createdBorrow,
+    });
   } catch (error) {
     console.error("Error creating borrowed book:", error);
     res.status(500).json({
@@ -110,7 +125,7 @@ export const returnBorrowedBooks = async (req, res) => {
     const borrowedBook = user.borrowedBooks.find(
       (b) => b.bookId.toString() === id && b.returned === false
     );
-    
+
     if (!borrowedBook) {
       return res.status(401).json({
         success: false,
@@ -126,7 +141,7 @@ export const returnBorrowedBooks = async (req, res) => {
     await book.save();
 
     const borrow = await borrowModel.findOne({
-      book: id,
+      "book.id": id,
       "user.email": email,
       returnDate: null,
     });
@@ -138,6 +153,7 @@ export const returnBorrowedBooks = async (req, res) => {
     }
 
     borrow.returnDate = new Date();
+    borrow.returned = true;
     const fine = calculateFine(borrow.dueDate);
     borrow.fine = fine;
     await borrow.save();

@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getCurrentUser,
   loginUser,
   logoutUser,
   registerUser,
@@ -15,5 +16,6 @@ userRouter.post("/verify", verifyEmail);
 userRouter.post("/resend-verification", resendVerificationCode);
 userRouter.post("/login", loginUser);
 userRouter.post("/logout", authMiddleware, logoutUser);
+userRouter.get("/me", authMiddleware, getCurrentUser);
 
 export default userRouter;
