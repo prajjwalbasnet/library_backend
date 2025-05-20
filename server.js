@@ -9,6 +9,7 @@ import { borrowRouter } from "./routes/borrowRoute.js";
 import { adminRouter } from "./routes/adminRouter.js";
 import { notifyUsers } from "./services/notifyUsers.js";
 import { removeUnverifiedAccounts } from "./services/removeUnverifiedAccount.js";
+import { reservationRouter } from "./routes/reservationRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -37,6 +38,7 @@ app.use("/api/user", userRouter);
 app.use("/api/book", bookRouter);
 app.use("/api/borrow", borrowRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/reservation", reservationRouter);
 
 app.listen(port, () => {
   console.log(`server started on ${port}.`);
